@@ -40,6 +40,12 @@ fi
 
 # NVM (Node Version Manager) - LAZY LOADED FOR SPEED
 export NVM_DIR="$HOME/.nvm"
+if [[ -r "$NVM_DIR/alias/default" ]]; then
+    for dir in "$NVM_DIR"/versions/node/v$(<"$NVM_DIR/alias/default")*/bin(N); do
+        export PATH="$dir:$PATH"
+        break
+    done
+fi
 nvm() {
     unset -f nvm node npm npx
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

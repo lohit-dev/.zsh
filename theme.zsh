@@ -17,7 +17,7 @@ fi
 # ------------------------------------------------
 # 2. Syntax Highlighting Theme Loader
 # ------------------------------------------------
-source "$ZDOTDIR/syntax-themes/dracula.zsh"
+source "$ZDOTDIR/syntax-themes/catppuccin-mocha.zsh"
 
 # ------------------------------------------------
 # 3. FZF Color Theme & Previews

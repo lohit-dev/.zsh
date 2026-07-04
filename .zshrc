@@ -27,4 +27,4 @@ source "$ZDOTDIR/aliases.zsh"
 
 # 7. Theme (Starship, FZF colors, Syntax Highlighting)
 source "$ZDOTDIR/theme.zsh"
-export STARSHIP_CONFIG="/Users/kinggrey/.config/zsh/starship/starship-jetpack.toml"
+export STARSHIP_CONFIG="/Users/kinggrey/.config/zsh/starship/starship-bracketed-segments.toml"
