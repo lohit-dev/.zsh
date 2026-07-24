@@ -68,6 +68,7 @@ fi
 alias lvim='NVIM_APPNAME=lvim nvim'
 alias chad='NVIM_APPNAME=nvim nvim'
 alias kvim='NVIM_APPNAME=kvim nvim'
+alias avim='NVIM_APPNAME=avim nvim'
 
 # ------------------------------------------------
 # Git Shortcuts
