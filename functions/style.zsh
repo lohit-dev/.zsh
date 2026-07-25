@@ -114,26 +114,62 @@ function syntax-theme() {
         printf "\n  \e[1;34m[*]\e[0m Setting syntax theme to: \e[1;32m%s\e[0m\n" "$selected"
 
         # Update the source line in theme.zsh
-        sed -i '' "s|^source.*syntax-themes/.*|source \"\$ZDOTDIR/syntax-themes/${selected}.zsh\"|" "$loader"
+        sed -i '' "s|^source.*syntax-themes/.*|source \"$ZDOTDIR/syntax-themes/${selected}.zsh\"|" "$loader"
 
-        # Update Ghostty terminal theme if available
+        # ── Theme → Ghostty + Wallpaper map ──────────────────────────
+        local ghostty_theme="" wallpaper=""
+        local wp_dir="$HOME/Pictures/wallpapers"
+        case "$selected" in
+            "dracula")
+                ghostty_theme="Dracula"
+                wallpaper="$wp_dir/drac.jpg"
+                ;;
+            "catppuccin-mocha")
+                ghostty_theme="Catppuccin Mocha"
+                wallpaper="$wp_dir/catpuccin.png"
+                ;;
+            "catppuccin-macchiato")
+                ghostty_theme="Catppuccin Macchiato"
+                wallpaper="$wp_dir/catpuccin.png"
+                ;;
+            "gruvbox")
+                ghostty_theme="Gruvbox Dark Hard"
+                wallpaper="$wp_dir/bog.png"
+                ;;
+            "tokyo_night")
+                ghostty_theme="Tokyo Night"
+                wallpaper="$wp_dir/astro.png"
+                ;;
+            "nord")
+                ghostty_theme="Nord"
+                wallpaper="$wp_dir/nord.png"
+                ;;
+            "cyberpunk")
+                ghostty_theme="Cyberpunk"
+                wallpaper="$wp_dir/base.png"
+                ;;
+        esac
+
+        # ── Update Ghostty config + reload ───────────────────────────
         local ghostty_conf="$HOME/.config/ghostty/config"
-        if [[ -f "$ghostty_conf" ]]; then
-            local ghostty_theme=""
-            case "$selected" in
-                "gruvbox")              ghostty_theme="Gruvbox Dark Hard" ;;
-                "dracula")              ghostty_theme="Dracula" ;;
-                "catppuccin-mocha")     ghostty_theme="Catppuccin Mocha" ;;
-                "catppuccin-macchiato") ghostty_theme="Catppuccin Macchiato" ;;
-                "tokyo_night")          ghostty_theme="Tokyo Night" ;;
-                "nord")                 ghostty_theme="Nord" ;;
-                "cyberpunk")            ghostty_theme="Cyberpunk" ;;
-            esac
-            
-            if [[ -n "$ghostty_theme" ]]; then
-                printf "  \e[1;34m[*]\e[0m Setting Ghostty terminal theme to: \e[1;32m%s\e[0m\n" "$ghostty_theme"
-                sed -i '' "s|^theme =.*|theme = $ghostty_theme|" "$ghostty_conf"
-            fi
+        if [[ -n "$ghostty_theme" && -f "$ghostty_conf" ]]; then
+            printf "  \e[1;34m[*]\e[0m Ghostty theme → \e[1;32m%s\e[0m\n" "$ghostty_theme"
+            sed -i '' "s|^theme =.*|theme = $ghostty_theme|" "$ghostty_conf"
+            # Reload Ghostty without restarting (sends reload-config signal)
+            pkill -USR2 ghostty 2>/dev/null || true
+        fi
+
+        # ── Set macOS wallpaper via osascript ─────────────────────────
+        if [[ -n "$wallpaper" && -f "$wallpaper" ]]; then
+            printf "  \e[1;34m[*]\e[0m Wallpaper → \e[1;32m%s\e[0m\n" "${wallpaper:t}"
+            osascript -e "
+                tell application \"System Events\"
+                    set theDesktops to a reference to every desktop
+                    repeat with d in theDesktops
+                        set picture of d to POSIX file \"$wallpaper\"
+                    end repeat
+                end tell
+            " 2>/dev/null
         fi
 
         printf "  \e[1;34m[*]\e[0m Reloading shell...\n"
