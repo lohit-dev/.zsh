@@ -122,7 +122,7 @@ function syntax-theme() {
         case "$selected" in
             "dracula")
                 ghostty_theme="Dracula"
-                wallpaper="$wp_dir/drac.jpg"
+                wallpaper="$wp_dir/base.jpg"
                 ;;
             "catppuccin-mocha")
                 ghostty_theme="Catppuccin Mocha"
@@ -134,11 +134,11 @@ function syntax-theme() {
                 ;;
             "gruvbox")
                 ghostty_theme="Gruvbox Dark Hard"
-                wallpaper="$wp_dir/bog.png"
+                wallpaper="$wp_dir/astro.png"
                 ;;
             "tokyo_night")
                 ghostty_theme="Tokyo Night"
-                wallpaper="$wp_dir/astro.png"
+                wallpaper="$wp_dir/nord.png"
                 ;;
             "nord")
                 ghostty_theme="Nord"
