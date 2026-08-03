@@ -17,7 +17,7 @@ fi
 # ------------------------------------------------
 # 2. Syntax Highlighting Theme Loader
 # ------------------------------------------------
-source "/Users/kinggrey/.config/zsh/syntax-themes/dracula.zsh"
+source "/Users/kinggrey/.config/zsh/syntax-themes/catppuccin-mocha.zsh"
 
 # ------------------------------------------------
 # 3. FZF Color Theme & Previews
