@@ -17,7 +17,22 @@ fi
 # ------------------------------------------------
 # 2. Syntax Highlighting Theme Loader
 # ------------------------------------------------
-source "/Users/kinggrey/.config/zsh/syntax-themes/catppuccin-mocha.zsh"
+# Reads the shared theme selection written by `theme-set` (functions/theme.zsh).
+# Neovim's colorscheme.lua reads this exact same file, so `theme-set <name>`
+# keeps the shell and editor in sync -- Neovim picks it up on its next launch,
+# this shell picks it up immediately below.
+typeset _current_theme_file="${XDG_STATE_HOME:-$HOME/.local/state}/current-theme"
+typeset _current_theme="catppuccin-mocha"
+[[ -r "$_current_theme_file" ]] && _current_theme="$(<"$_current_theme_file")"
+
+typeset _syntax_theme_file="${ZDOTDIR:-$HOME/.config/zsh}/syntax-themes/${_current_theme}.zsh"
+if [[ -f "$_syntax_theme_file" ]]; then
+    source "$_syntax_theme_file"
+else
+    echo "theme.zsh: unknown theme '$_current_theme', falling back to catppuccin-mocha" >&2
+    source "${ZDOTDIR:-$HOME/.config/zsh}/syntax-themes/catppuccin-mocha.zsh"
+fi
+unset _current_theme_file _current_theme _syntax_theme_file
 
 # ------------------------------------------------
 # 3. FZF Color Theme & Previews

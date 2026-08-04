@@ -67,7 +67,10 @@ function style() {
 # ── Syntax Highlighting Theme Switcher ───────────────────────────
 function syntax-theme() {
     local themes_dir="$ZDOTDIR/syntax-themes"
-    local loader="$ZDOTDIR/theme.zsh"
+    # Shared with theme.zsh (shell) and Neovim's colorscheme.lua (editor) --
+    # writing here is what keeps all three in sync, not sed-patching a
+    # source line in theme.zsh anymore.
+    local state_file="${XDG_STATE_HOME:-$HOME/.local/state}/current-theme"
 
     if [[ ! -d "$themes_dir" ]]; then
         printf "\e[1;31m  [!] Syntax themes directory not found: %s\e[0m\n" "$themes_dir"
@@ -85,11 +88,9 @@ function syntax-theme() {
         return 1
     fi
 
-    # Detect current theme
+    # Detect current theme from the shared state file
     local current=""
-    if [[ -f "$loader" ]]; then
-        current=$(grep 'source.*syntax-themes/' "$loader" | sed 's|.*/||; s|\.zsh.*||')
-    fi
+    [[ -r "$state_file" ]] && current="$(<"$state_file")"
 
     printf "\n\e[1;36m╭────────────────────────────────────────╮\e[0m\n"
     printf "\e[1;36m│ \e[1;37m   🎨 Choose a Syntax Theme           \e[1;36m│\e[0m\n"
@@ -113,8 +114,8 @@ function syntax-theme() {
 
         printf "\n  \e[1;34m[*]\e[0m Setting syntax theme to: \e[1;32m%s\e[0m\n" "$selected"
 
-        # Update the source line in theme.zsh
-        sed -i '' "s|^source.*syntax-themes/.*|source \"$ZDOTDIR/syntax-themes/${selected}.zsh\"|" "$loader"
+        mkdir -p "${state_file:h}"
+        echo "$selected" > "$state_file"
 
         # ── Theme → Ghostty + Wallpaper map ──────────────────────────
         local ghostty_theme="" wallpaper=""
@@ -157,9 +158,15 @@ function syntax-theme() {
             sed -i '' "s|^theme =.*|theme = $ghostty_theme|" "$ghostty_conf"
             # Reload Ghostty without restarting (sends reload-config signal)
             pkill -USR2 ghostty 2>/dev/null || true
+        elif [[ -n "$ghostty_theme" ]]; then
+            printf "  \e[1;33m[!]\e[0m Ghostty config not found at %s, skipped\n" "$ghostty_conf"
         fi
 
         # ── Set macOS wallpaper via osascript ─────────────────────────
+        # This used to fail silently when the file didn't exist -- if you've
+        # been seeing "wallpaper doesn't change for some themes", it's very
+        # likely one of these paths just doesn't match what's actually in
+        # ~/Pictures/wallpapers. Now it tells you instead of doing nothing.
         if [[ -n "$wallpaper" && -f "$wallpaper" ]]; then
             printf "  \e[1;34m[*]\e[0m Wallpaper → \e[1;32m%s\e[0m\n" "${wallpaper:t}"
             osascript -e "
@@ -170,6 +177,8 @@ function syntax-theme() {
                     end repeat
                 end tell
             " 2>/dev/null
+        elif [[ -n "$wallpaper" ]]; then
+            printf "  \e[1;31m[!]\e[0m Wallpaper file not found: \e[1;33m%s\e[0m (wallpaper not changed)\n" "$wallpaper"
         fi
 
         printf "  \e[1;34m[*]\e[0m Reloading shell...\n"

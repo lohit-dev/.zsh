@@ -59,16 +59,14 @@ alias ffch='_fuzzy_search_cmd_history'                                 # fuzzy c
 # Neovim Shortcuts
 # ------------------------------------------------
 if command -v nvim >/dev/null 2>&1; then
-    alias vi='nvim'
-    alias vim='nvim'
-    alias svi='sudo nvim'
+    alias vi='lvim'
+    alias vim='lvim'
+    alias svi='sudo lvim'
     alias nv='nvim'
     alias nvd='nvim .'                                                     # open nvim in current dir
 fi
 alias lvim='NVIM_APPNAME=lvim nvim'
 alias chad='NVIM_APPNAME=nvim nvim'
-alias kvim='NVIM_APPNAME=kvim nvim'
-alias avim='NVIM_APPNAME=avim nvim'
 
 # ------------------------------------------------
 # Git Shortcuts
