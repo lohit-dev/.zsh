@@ -123,7 +123,7 @@ function syntax-theme() {
         case "$selected" in
             "dracula")
                 ghostty_theme="Dracula"
-                wallpaper="$wp_dir/base.jpg"
+                wallpaper="$wp_dir/base.png"
                 ;;
             "catppuccin-mocha")
                 ghostty_theme="Catppuccin Mocha"
